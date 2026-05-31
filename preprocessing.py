@@ -28,6 +28,7 @@ def load_data(path="data/spotify_dataset.csv"):
     df = df[use_cols]
     df = df.dropna()
     df = df.drop_duplicates(subset=["track_name", "artists"])
+    df = df.reset_index(drop=True)
 
     return df
 
