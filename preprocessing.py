@@ -19,6 +19,7 @@ def load_data(path="data/spotify_dataset.csv"):
     df = pd.read_csv(path)
 
     use_cols = [
+        "track_id",
         "track_name",
         "artists",
         "popularity",

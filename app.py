@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
+import streamlit.components.v1 as components
 
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
@@ -29,59 +30,36 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    .main {
-        background-color: #0E1117;
-    }
-
     h1, h2, h3 {
         color: #111827;
         font-weight: 800;
     }
 
-    .big-title {
-        font-size: 58px;
+    .top-header {
+        background-color: #20364A;
+        padding: 28px 42px;
+        border-radius: 0px 0px 28px 28px;
+        margin-bottom: 22px;
+    }
+
+    .brand-title {
+        font-size: 44px;
         font-weight: 900;
-        color: #111827;
+        color: #FF7AF5;
+        margin-bottom: 4px;
+        letter-spacing: 1px;
+    }
+
+    .brand-subtitle {
+        font-size: 19px;
+        color: #E5E7EB;
         margin-bottom: 0px;
     }
 
-    .subtitle {
-        font-size: 21px;
-        color: #4B5563;
-        margin-bottom: 28px;
-    }
-
-    .hero-card {
-        background: linear-gradient(135deg, #111827 0%, #1DB954 100%);
-        padding: 36px;
-        border-radius: 28px;
-        color: white;
-        margin-bottom: 28px;
-    }
-
-    .section-card {
-        background-color: #FFFFFF;
-        padding: 24px;
-        border-radius: 22px;
-        margin-bottom: 18px;
-        border: 1px solid #E5E7EB;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-    }
-
-    .song-card {
-        background: #FFFFFF;
-        padding: 24px 28px;
-        border-radius: 22px;
-        margin-bottom: 18px;
-        border: 1px solid #E5E7EB;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-    }
-
     .song-title {
-        font-size: 26px;
+        font-size: 24px;
         font-weight: 800;
         color: #111827;
-        margin-bottom: 10px;
     }
 
     .song-meta {
@@ -90,55 +68,16 @@ st.markdown(
         line-height: 1.7;
     }
 
-    .metric-card {
-        background-color: #FFFFFF;
-        padding: 20px;
-        border-radius: 20px;
-        text-align: center;
-        border: 1px solid #E5E7EB;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.05);
-    }
-
-    .metric-number {
-        font-size: 32px;
-        font-weight: 800;
+    .spotify-link {
         color: #1DB954;
-    }
-
-    .metric-label {
-        font-size: 15px;
-        color: #4B5563;
-    }
-
-    .highlight {
-        color: #1DB954;
-        font-weight: 800;
+        font-weight: 700;
+        text-decoration: none;
     }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-st.markdown(
-    """
-    <style>
-    div[role="radiogroup"] {
-        background-color: #FFFFFF;
-        padding: 14px;
-        border-radius: 18px;
-        border: 1px solid #E5E7EB;
-        box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-    }
-
-    div[role="radiogroup"] label {
-        padding: 8px 12px;
-        border-radius: 12px;
-        margin-right: 6px;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
 
 # =========================
 # DATA FUNCTIONS
@@ -196,6 +135,7 @@ def evaluate_knn(df):
 
     return pd.DataFrame(results), cm, list(top_genres), best_k, best_acc
 
+
 @st.cache_data
 def normalize_features_for_visualization(df):
     visual_df = df.copy()
@@ -225,7 +165,10 @@ song_display_df["song_label"] = (
     song_display_df["track_name"].astype(str)
     + " — "
     + song_display_df["artists"].astype(str)
+    + " | "
+    + song_display_df["track_id"].astype(str)
 )
+
 song_display_df = song_display_df.sort_values(
     ["popularity", "track_name"],
     ascending=[False, True]
@@ -233,33 +176,10 @@ song_display_df = song_display_df.sort_values(
 
 
 # =========================
-# TOP HEADER + NAVIGATION
+# HEADER
 # =========================
 st.markdown(
     """
-    <style>
-    .top-header {
-        background-color: #20364A;
-        padding: 28px 42px;
-        border-radius: 0px 0px 28px 28px;
-        margin-bottom: 22px;
-    }
-
-    .brand-title {
-        font-size: 44px;
-        font-weight: 900;
-        color: #FF7AF5;
-        margin-bottom: 4px;
-        letter-spacing: 1px;
-    }
-
-    .brand-subtitle {
-        font-size: 19px;
-        color: #E5E7EB;
-        margin-bottom: 0px;
-    }
-    </style>
-
     <div class="top-header">
         <div class="brand-title">SONG RECOMMENDER</div>
         <div class="brand-subtitle">
@@ -270,6 +190,10 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+
+# =========================
+# NAVIGATION
+# =========================
 page = option_menu(
     menu_title=None,
     options=[
@@ -277,9 +201,9 @@ page = option_menu(
         "Dataset Insights",
         "Audio Feature Analysis",
         "Model Evaluation",
-        "Song Explorer",
         "Business Use Case",
-        "About Project"
+        "About Project",
+        "Song Explorer"
     ],
     icons=[
         "music-note-beamed",
@@ -321,7 +245,6 @@ page = option_menu(
 st.divider()
 
 
-
 # =========================
 # RECOMMENDER
 # =========================
@@ -338,20 +261,14 @@ if page == "Recommender":
 
     st.divider()
 
-    # =========================
-    # SESSION STATE
-    # =========================
     if "selected_song_labels" not in st.session_state:
         st.session_state.selected_song_labels = []
 
-    # =========================
-    # STEP 1: SONG SELECTION
-    # =========================
     st.subheader("Step 1. Select Your Favorite Songs")
 
     search_text = st.text_input(
         "Search song or artist",
-        placeholder="Example: BTS, Taylor Swift, The Weeknd, NewJeans"
+        placeholder="Example: BTS, Taylor Swift, The Weeknd, Ariana Grande"
     )
 
     filtered_options_df = song_display_df.copy()
@@ -414,9 +331,6 @@ if page == "Recommender":
 
     st.divider()
 
-    # =========================
-    # STEP 2: SETTINGS
-    # =========================
     st.subheader("Step 2. Recommendation Settings")
 
     col1, col2, col3 = st.columns(3)
@@ -445,11 +359,9 @@ if page == "Recommender":
 
     st.divider()
 
-    # =========================
-    # SELECTED SONG PREVIEW
-    # =========================
     if len(selected_labels) > 0:
-        selected_songs = [label.split(" — ")[0] for label in selected_labels]
+        selected_track_ids = [label.split(" | ")[-1] for label in selected_labels]
+        selected_songs = df[df["track_id].isin(selected_track_ids)]["track_name"].tolist()
 
         selected_df = df[df["track_name"].isin(selected_songs)].copy()
         selected_visual_df = visual_df[visual_df["track_name"].isin(selected_songs)].copy()
@@ -487,9 +399,7 @@ if page == "Recommender":
 
     else:
         st.info("Select at least 2 songs to build a personalized recommendation profile.")
-    # =========================
-    # STEP 3: GENERATE RECOMMENDATIONS
-    # =========================
+
     if st.button("Generate Personalized Recommendations", type="primary"):
         if len(selected_labels) < 2:
             st.warning("Please select at least 2 songs to generate personalized recommendations.")
@@ -516,7 +426,6 @@ if page == "Recommender":
                     st.warning("No songs matched the minimum popularity filter.")
                 else:
                     st.divider()
-
                     st.subheader("Step 3. Recommendation Results")
 
                     avg_similarity = recommendations["similarity_score"].mean()
@@ -532,21 +441,37 @@ if page == "Recommender":
 
                     st.markdown("### Recommended Songs")
 
+                    spotify_logo = "https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_RGB_Green.png"
+
                     for rank, (_, row) in enumerate(recommendations.iterrows(), start=1):
-                        st.markdown(
-                            f"""
-                            <div class="song-card">
-				<div class="song-title">#{rank} {row['track_name']}</div>
-				<div class="song-meta">
-					<b>Artist:</b> {row['artists']}<br>
-         				<b>Genre:</b> {row['track_genre']} &nbsp;&nbsp; 
-                			<b>Popularity:</b> {row['popularity']} &nbsp;&nbsp; 
-                			<b>Similarity:</b> {row['similarity_score']:.3f}
-                            	</div>
-	        	    </div>
-                            """,
-                            unsafe_allow_html=True
-                        )
+                        spotify_url = f"https://open.spotify.com/track/{row['track_id']}"
+
+                        with st.container(border=True):
+                            img_col, info_col, link_col = st.columns([1.1, 5, 1.5])
+
+                            with img_col:
+                                components.iframe(
+                                    f"https://open.spotify.com/embed/track/{row['track_id']}",
+                                    height=152,
+                                    scrolling=False
+                                )
+
+                            with info_col:
+                                st.markdown(
+                                    f"""
+                                    <div class="song-title">#{rank} {row['track_name']}</div>
+                                    <div class="song-meta">
+                                    <b>Artist:</b> {row['artists']}<br>
+                                    <b>Genre:</b> {row['track_genre']} &nbsp;&nbsp;
+                                    <b>Popularity:</b> {row['popularity']} &nbsp;&nbsp;
+                                    <b>Similarity:</b> {row['similarity_score']:.3f}
+                                    </div>
+                                    """,
+                                    unsafe_allow_html=True
+                                )
+
+                            with link_col:
+                                st.link_button("Open in Spotify", spotify_url)
 
                     st.markdown("### Recommendation Table")
                     st.dataframe(
@@ -556,7 +481,6 @@ if page == "Recommender":
                     )
 
                     st.divider()
-
                     st.subheader("Recommendation Analysis")
 
                     chart_tab1, chart_tab2, chart_tab3, chart_tab4 = st.tabs(
@@ -1037,6 +961,19 @@ elif page == "About Project":
         - The model does not use individual user listening history.
         - Recommendations are based only on structured Spotify audio features.
         """
+    )
+
+    st.subheader("Why Cosine Similarity?")
+
+    st.markdown(
+        """
+        Cosine similarity measures how similar two songs are based on the direction of their audio feature vectors.
+        This is useful because the recommendation model focuses on the overall pattern of musical characteristics,
+        rather than only the absolute size of each feature value.
+        
+        For example, songs with similar danceability, energy, valence, and acousticness patterns are likely to feel musically similar.
+        """
+
     )
 
     st.subheader("Why This Still Works")

@@ -56,11 +56,13 @@ def recommend_songs(
             continue
 
         results.append({
+            "track_id" : row["track_id"],
             "track_name": row["track_name"],
             "artists": row["artists"],
             "track_genre": row["track_genre"],
             "popularity": row["popularity"],
-            "similarity_score": round(1 - distance, 3)
+            "similarity_score": round(1 - distance, 3),
+            "spotify_url" : f"https://open.spotify.com/track/{row['track_id']}"
         })
 
         if len(results) == n_recommendations:

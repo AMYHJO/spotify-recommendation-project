@@ -5,4 +5,5 @@ streamlit
 matplotlib
 plotly
 streamlit-option-menu
+spotipy
 
