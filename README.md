@@ -47,7 +47,7 @@ The recommendation system uses:
 pip install -r requirements.txt
 streamlit run app.py
 
-Project Structure
+## Project Structure
 spotify-recommendation-project/
 ├── app.py
 ├── preprocessing.py
@@ -56,13 +56,13 @@ spotify-recommendation-project/
 ├── README.md
 └── data/
 
-Limitations
+## Limitations
 * The model does not use lyrics.
 * The model does not use user listening history.
 * The model does not analyze raw audio files.
 * Recommendations are based only on structured audio features.
 
-Future Improvements
+## Future Improvements
 * Add collaborative filtering
 * Add lyrics-based NLP analysis
 * Improve duplicate song handling
