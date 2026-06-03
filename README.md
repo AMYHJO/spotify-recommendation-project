@@ -41,12 +41,6 @@ The recommendation system uses:
 - K-Nearest Neighbors
 - Cosine similarity
 
-## How to Run
-
-```bash
-pip install -r requirements.txt
-streamlit run app.py
-
 ## Project Structure
 spotify-recommendation-project/
 ├── app.py
@@ -68,5 +62,13 @@ spotify-recommendation-project/
 * Improve duplicate song handling
 * Add user profile saving
 * Deploy using Streamlit Cloud
+
+
+## How to Run
+
+```bash
+pip install -r requirements.txt
+streamlit run app.py
+
 
 
